@@ -80,5 +80,6 @@
         <p>© 2025 TuitionConnect. All rights reserved.</p>
         <p>Server Time: <%= new java.util.Date() %></p>
     </footer>
+
 </body>
 </html>
