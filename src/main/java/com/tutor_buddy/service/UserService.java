@@ -6,7 +6,6 @@ package com.tutor_buddy.service;
 import com.tutor_buddy.model.BSTNode;
 import com.tutor_buddy.model.User;
 import org.springframework.stereotype.Service;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
