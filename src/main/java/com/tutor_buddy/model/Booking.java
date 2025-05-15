@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class Booking {
     private Long id;
-    private Long userId;
+    private Long userI;
     private Long tutorId;
     private String subject;
     private LocalDateTime sessionDate;
