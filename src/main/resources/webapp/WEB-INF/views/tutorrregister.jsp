@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TuitionConnect - Student Registration</title>
+    <title>TuitionConnect - Tutor Registration</title>
 </head>
 <body>
 <h1>TuitionConnect</h1>
@@ -15,8 +15,8 @@
 
 <div>
     <div>
-        <h2>Student Registration</h2>
-        <form:form modelAttribute="user" method="post" action="${pageContext.request.contextPath}/api/users/students/register" enctype="multipart/form-data">
+        <h2>Tutor Registration</h2>
+        <form:form modelAttribute="tutor" method="post" action="${pageContext.request.contextPath}/api/tutors/register" enctype="multipart/form-data">
             <div>
                 <form:input path="fullName" placeholder="Full Name" required="true"/>
             </div>
@@ -27,25 +27,19 @@
                 <form:input path="phone" placeholder="Phone" required="true"/>
             </div>
             <div>
-                <form:input path="password" type="password" placeholder="Password" required="true"/>
+                <form:input path="hourlyRate" type="number" step="0.01" placeholder="Hourly Rate ($)" required="true"/>
             </div>
             <div>
-                <label for="educationLevel">Select your education level</label>
-                <form:select path="educationLevel">
-                    <form:option value="School"/>
-                    <form:option value="College/University"/>
-                    <form:option value="Professional Development"/>
-                </form:select>
+                <form:input path="education" placeholder="Education" required="true"/>
             </div>
             <div>
-                <form:input path="bio" placeholder="Short Bio"/>
+                <form:input path="experienceYears" type="number" placeholder="Experience (years)" required="true"/>
             </div>
             <div>
-                <label for="profilePicture">Profile Picture</label>
-                <input type="file" name="profilePicture" accept="image/jpeg,image/png"/>
+                <form:input path="subjectExpertise" type="number" step="0.1" placeholder="Subject Expertise (0-100)" required="true"/>
             </div>
             <div>
-                <input type="submit" value="Register as Student"/>
+                <input type="submit" value="Register as Tutor"/>
                 <p>Already registered? <a href="${pageContext.request.contextPath}/api/auth/login">Login here</a></p>
             </div>
         </form:form>
