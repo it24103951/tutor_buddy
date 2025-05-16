@@ -50,7 +50,6 @@
 
 <footer>
     <p>&copy; 2025 TuitionConnect. All rights reserved.</p>
-
 </footer>
 </body>
 </html>
