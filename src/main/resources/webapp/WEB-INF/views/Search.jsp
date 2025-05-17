@@ -211,6 +211,7 @@
         document.getElementById('booking_tutorId').value = tutorId;
         showStep('step3');
     }
+
 </script>
 </body>
 </html>
