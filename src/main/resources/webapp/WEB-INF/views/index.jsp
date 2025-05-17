@@ -85,6 +85,7 @@
         <a href="#">Help Center</a>
     </div>
     <p>&copy; 2025 TuitionConnect. All rights reserved. | Last updated: May 15, 2025, 12:00 PM +0530</p>
+
 </footer>
 </body>
 </html>
