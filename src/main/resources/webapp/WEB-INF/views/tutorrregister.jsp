@@ -48,6 +48,7 @@
 
 <footer>
     <p>© 2025 TuitionConnect. All rights reserved.</p>
+
 </footer>
 </body>
 </html>
