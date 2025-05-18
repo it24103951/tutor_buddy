@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tuition Connect - Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Add Google Sign-In API -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Add Apple Sign-In API -->
+  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #fce4ec);
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.3s ease;
+    }
+    body.dark-mode {
+      background: linear-gradient(to right, #1a1a1a, #2d1b21);
+    }
+    .card {
+      border: none;
+      border-radius: 10px;
+    }
+    .card-body {
+      padding: 1.5rem;
+    }
+    h2 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: #343a40;
+    }
+    .btn-primary {
+      background-color: #0d6efd;
+      border: none;
+      font-size: 0.9rem;
+    }
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+    }
+    .btn-outline-primary {
+      font-size: 0.9rem;
+    }
+    .terms {
+      font-size: 0.75rem;
+      color: #6c757d;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .contact-box {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      font-size: 0.85rem;
+      margin-top: 30px;
+    }
+    .contact-box h4 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+    footer {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: 60px;
+      font-size: 0.9rem;
+    }
+    .dark-mode .contact-box {
+      background-color: #2d2d2d;
+      color: #e9ecef;
+    }
+    .dark-mode .terms {
+      color: #ced4da;
+    }
+    .dark-mode h2 {
+      color: #e9ecef;
+    }
+    .dark-mode .card {
+      background-color: #2d2d2d;
+    }
+    .dark-mode .form-control {
+      background-color: #343a40;
+      border-color: #495057;
+      color: #e9ecef;
+    }
+    .dark-mode .form-control:focus {
+      background-color: #3d4246;
+      color: #e9ecef;
+    }
+    .dark-mode .input-group-text {
+      background-color: #343a40;
+      border-color: #495057;
+      color: #e9ecef;
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 5px;
+      color: white;
+      z-index: 1000;
+      animation: slideIn 0.5s ease-out;
+    }
+    .notification.success {
+      background-color: #28a745;
+    }
+    .notification.error {
+      background-color: #dc3545;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .role-selector {
+      margin-bottom: 1rem;
+    }
+    .role-selector .btn {
+      width: 50%;
+      padding: 8px;
+      transition: all 0.3s ease;
+    }
+    .role-selector .btn.active {
+      background-color: #0d6efd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">TuitionConnect</a>
+    <div class="d-flex">
+      
+</nav>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5 text-center">
+      <div class="card shadow">
+        <div class="card-body">
+          <h2 class="mb-4">
+            <i class="fas fa-sign-in-alt me-2"></i>Welcome Back
+          </h2>
+
+          <div class="role-selector btn-group w-100 mb-4">
+            <button type="button" class="btn btn-outline-primary active" onclick="setRole('student')">Student</button>
+            <button type="button" class="btn btn-outline-primary" onclick="setRole('tutor')">Tutor</button>
+          </div>
+
+          <form id="loginForm">
+            <div class="input-group mb-3">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <input type="email" class="form-control" id="email" placeholder="Email" required>
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <input type="password" class="form-control" id="password" placeholder="Password" required>
+              <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-3">
+              <i class="fas fa-unlock me-2"></i>Login
+            </button>
+
+            <div class="terms">
+              By signing in, you agree with our 
+              <a href="Terms of Service.html">Terms & Conditions</a> and 
+              <a href="Terms of Service.html">Privacy Statement</a>.
+            </div>
+
+            <div class="text-center mt-3">
+              <small>Don't have an account?</small><br>
+              <div class="btn-group mt-2">
+                <a href="studentregister.html" class="btn btn-sm btn-outline-primary">Register as Student</a>
+                <a href="tutorregister.html" class="btn btn-sm btn-outline-primary">Register as Tutor</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+<footer>
+  © 2025 TuitionConnect. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let currentRole = 'student';
+
+  function setRole(role) {
+    currentRole = role;
+    document.querySelectorAll('.role-selector .btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const navbar = document.querySelector('.navbar');
+    if (document.body.classList.contains('dark-mode')) {
+      document.body.style.background = 'linear-gradient(to right, #1a1a1a, #2d1b21)';
+      navbar.classList.remove('navbar-light', 'bg-light');
+      navbar.classList.add('navbar-dark', 'bg-dark');
+      document.querySelector('.dark-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+      document.body.style.background = 'linear-gradient(to right, #e3f2fd, #fce4ec)';
+      navbar.classList.remove('navbar-dark', 'bg-dark');
+      navbar.classList.add('navbar-light', 'bg-light');
+      document.querySelector('.dark-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+    }
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
+
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const icon = event.target.querySelector('i') || event.target;
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+      <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+      ${message}
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // Call the backend API for login
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Login failed');
+      }
+    })
+    .then(userData => {
+      // Store logged in user info
+      localStorage.setItem('user', JSON.stringify({
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        type: userData.type
+      }));
+
+      showNotification('Login successful! Redirecting...', 'success');
+      
+      // Redirect based on role
+      setTimeout(() => {
+        if (userData.type === 'TUTOR') {
+          window.location.href = 'tutormanagement.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      }, 1500);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showNotification('Invalid email or password', 'error');
+    });
+  });
+
+  // Check dark mode preference on load
+  if (localStorage.getItem('darkMode') === 'true') {
+    toggleDarkMode();
+  }
+
+  // Google Sign-In callback
+  function handleGoogleSignIn(response) {
+    const credential = response.credential;
+    
+    // For development - log the token (remove in production)
+    console.log('Google Sign-In successful. Token:', credential);
+    
+    fetch('/api/auth/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token: credential })
+    })
+    .then(response => {
+      if (response.ok) {
+        document.querySelector('.terms').innerHTML = '<p class="text-success">Login successful! Redirecting...</p>';
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      } else {
+        document.querySelector('.terms').innerHTML = '<p class="text-danger">Login failed. Please try again.</p>';
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.querySelector('.terms').innerHTML = '<p class="text-danger">Server error. Please try again later.</p>';
+    });
+  }
+
+  // Apple Sign-In configuration
+  AppleID.auth.init({
+    clientId: 'YOUR_APPLE_CLIENT_ID',
+    scope: 'name email',
+    redirectURI: window.location.origin + '/api/auth/apple/callback',
+    state: 'origin:web',
+    usePopup: true,
+    nonce: generateNonce(), // Add security nonce
+  });
+
+  // Generate random nonce for security
+  function generateNonce() {
+    const array = new Uint8Array(16);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Apple Sign-In event listener
+  document.addEventListener('AppleIDSignInOnSuccess', (event) => {
+    // For development - log the response (remove in production)
+    console.log('Apple Sign-In successful. Response:', event.detail);
+
+    fetch('/api/auth/apple', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(event.detail)
+    })
+    .then(response => {
+      if (response.ok) {
+        document.querySelector('.terms').innerHTML = '<p class="text-success">Login successful! Redirecting...</p>';
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      } else {
+        document.querySelector('.terms').innerHTML = '<p class="text-danger">Login failed. Please try again.</p>';
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.querySelector('.terms').innerHTML = '<p class="text-danger">Server error. Please try again later.</p>';
+    });
+  });
+
+  document.addEventListener('AppleIDSignInOnFailure', (error) => {
+    console.error('Apple Sign-In failed:', error);
+    document.querySelector('.terms').innerHTML = '<p class="text-danger">Apple Sign-In failed. Please try again.</p>';
+  });
+</script>
+</body>
+</html>
