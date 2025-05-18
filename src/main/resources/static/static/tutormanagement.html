@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TuitionConnect - Tutor Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #fce4ec);
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.3s ease;
+    }
+    body.dark-mode {
+      background: linear-gradient(to right, #1a1a1a, #2d1b21);
+    }
+    .dark-mode .table {
+      background-color: #2d2d2d;
+      color: #e9ecef;
+    }
+    .dark-mode .modal-content {
+      background-color: #2d2d2d;
+      color: #e9ecef;
+    }
+    footer {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: 60px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">TuitionConnect</a>
+    <div class="d-flex">
+      <button class="btn btn-outline-secondary me-2 dark-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+      <a href="Login.html" class="btn btn-outline-primary me-2">Login</a>
+      <a href="studentregister.html" class="btn btn-primary">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4"><i class="fas fa-users-cog me-2"></i>Manage Tutors</h2>
+
+  <div class="d-flex justify-content-between mb-3">
+    <div>
+      <select class="form-select d-inline-block w-auto me-2" id="subject-filter">
+        <option value="">All Subjects</option>
+        <option value="OOP">OOP</option>
+        <option value="DSA">DSA</option>
+        <option value="DM">DM</option>
+        <option value="TW">TW</option>
+      </select>
+      <select class="form-select d-inline-block w-auto" id="status-filter">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTutorModal">Add New Tutor</button>
+  </div>
+
+  <!-- Tutors Table -->
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>Subjects</th>
+        <th>Rate</th>
+        <th>Rating</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tutor-table">
+      <!-- Populated dynamically -->
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <nav>
+    <ul class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>
+      <li class="page-item"><a class="page-link" href="#" onclick="changePage(2)">2</a></li>
+      <li class="page-item"><a class="page-link" href="#" onclick="changePage(3)">3</a></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Add Tutor Modal -->
+<div class="modal fade" id="addTutorModal" tabindex="-1" aria-labelledby="addTutorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTutorModalLabel">Add New Tutor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-tutor-form">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="tutor-name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="tutor-name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="tutor-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="tutor-email" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="tutor-phone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="tutor-phone" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="hourly-rate" class="form-label">Hourly Rate ($)</label>
+              <input type="number" class="form-control" id="hourly-rate" required min="0">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="bio" class="form-label">Bio</label>
+            <textarea class="form-control" id="bio" rows="3"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="education" class="form-label">Education</label>
+              <input type="text" class="form-control" id="education" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="experience" class="form-label">Experience (years)</label>
+              <input type="number" class="form-control" id="experience" required min="0">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="subjects" class="form-label">Subjects</label>
+            <select class="form-select" id="subjects" multiple>
+              <option value="OOP">OOP</option>
+              <option value="DSA">DSA</option>
+              <option value="DM">DM</option>
+              <option value="TW">TW</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Availability</label>
+            <div class="border p-3">
+              <div class="mb-2">
+                <label class="form-label">Monday</label>
+                <div class="input-group">
+                  <input type="time" class="form-control" id="monday-start">
+                  <span class="input-group-text">to</span>
+                  <input type="time" class="form-control" id="monday-end">
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm mt-2">Add Time Slot</button>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="status" id="status-active" value="Active" required>
+                <label class="form-check-label" for="status-active">Active</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="status" id="status-inactive" value="Inactive">
+                <label class="form-check-label" for="status-inactive">Inactive</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="profile-pic" class="form-label">Profile Picture</label>
+            <input type="file" class="form-control" id="profile-pic" accept="image/jpeg,image/png">
+            <small class="form-text text-muted">JPG, PNG, max 2MB</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="addTutor()">Save Tutor</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 TuitionConnect. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let currentPage = 1;
+  let tutors = [];
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const navbar = document.querySelector('.navbar');
+    if (document.body.classList.contains('dark-mode')) {
+      document.body.style.background = 'linear-gradient(to right, #1a1a1a, #2d1b21)';
+      navbar.classList.remove('navbar-light', 'bg-light');
+      navbar.classList.add('navbar-dark', 'bg-dark');
+      document.querySelector('.dark-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+      document.body.style.background = 'linear-gradient(to right, #e3f2fd, #fce4ec)';
+      navbar.classList.remove('navbar-dark', 'bg-dark');
+      navbar.classList.add('navbar-light', 'bg-light');
+      document.querySelector('.dark-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+    }
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
+
+  if (localStorage.getItem('darkMode') === 'true') {
+    toggleDarkMode();
+  }
+
+  // Load Tutors from localStorage
+  function loadTutors() {
+    tutors = JSON.parse(localStorage.getItem('tutors') || '[]');
+    filterTutors();
+    updatePagination();
+  }
+
+  function updatePagination() {
+    const totalPages = Math.ceil(tutors.length / 5);
+    const pagination = document.querySelector('.pagination');
+    pagination.innerHTML = '';
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagination.innerHTML += `
+        <li class="page-item ${currentPage === i ? 'active' : ''}">
+          <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+        </li>
+      `;
+    }
+  }
+
+  function filterTutors() {
+    const subjectFilter = document.getElementById('subject-filter').value;
+    const statusFilter = document.getElementById('status-filter').value;
+    const filteredTutors = tutors.filter(tutor => {
+      const matchesSubject = !subjectFilter || (tutor.subjects || []).includes(subjectFilter);
+      const matchesStatus = !statusFilter || tutor.status === statusFilter;
+      return matchesSubject && matchesStatus;
+    });
+    displayTutors(filteredTutors);
+  }
+
+  function displayTutors(filteredTutors) {
+    const tutorTable = document.getElementById('tutor-table');
+    const noTutorsDiv = document.createElement('tr');
+    
+    if (filteredTutors.length === 0) {
+      noTutorsDiv.innerHTML = `
+        <td colspan="7" class="text-center p-4">
+          <i class="fas fa-user-tie fa-3x text-muted mb-3"></i>
+          <h5>No Tutors Found</h5>
+          <p class="text-muted">Start by adding a new tutor registration.</p>
+          <a href="tutorregister.html" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add New Tutor
+          </a>
+        </td>
+      `;
+      tutorTable.innerHTML = '';
+      tutorTable.appendChild(noTutorsDiv);
+      return;
+    }
+
+    const start = (currentPage - 1) * 5;
+    const end = start + 5;
+    const pageTutors = filteredTutors.slice(start, end);
+
+    tutorTable.innerHTML = '';
+    pageTutors.forEach((tutor, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>
+          <img src="${tutor.photo || 'https://via.placeholder.com/50'}" 
+               alt="Tutor Photo" 
+               width="50" 
+               class="rounded-circle">
+        </td>
+        <td>
+          <div class="d-flex flex-column">
+            <span class="fw-bold">${tutor.fullName || tutor.firstName + ' ' + tutor.lastName}</span>
+            <small class="text-muted">${tutor.email}</small>
+          </div>
+        </td>
+        <td>${Array.isArray(tutor.subjects) ? tutor.subjects.join(', ') : tutor.subjects}</td>
+        <td>$${tutor.hourlyRate}/hr</td>
+        <td>
+          <div class="d-flex align-items-center">
+            <i class="fas fa-star text-warning me-1"></i>
+            <span>${tutor.rating || 'New'}</span>
+          </div>
+        </td>
+        <td>
+          <span class="badge ${tutor.active ? 'bg-success' : 'bg-secondary'}">
+            ${tutor.active ? 'Active' : 'Inactive'}
+          </span>
+        </td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-outline-primary btn-sm" onclick="editTutor(${index})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="deleteTutor(${index})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      tutorTable.appendChild(row);
+    });
+  }
+
+  function changePage(page) {
+    currentPage = page;
+    filterTutors();
+  }
+
+  function addTutor() {
+    const tutorData = {
+      fullName: document.getElementById('tutor-name').value,
+      email: document.getElementById('tutor-email').value,
+      phone: document.getElementById('tutor-phone').value,
+      hourlyRate: parseFloat(document.getElementById('hourly-rate').value),
+      bio: document.getElementById('bio').value,
+      education: document.getElementById('education').value,
+      experience: parseInt(document.getElementById('experience').value),
+      subjects: Array.from(document.getElementById('subjects').selectedOptions).map(option => option.value),
+      status: document.querySelector('input[name="status"]:checked').value,
+      active: document.querySelector('input[name="status"]:checked').value === 'Active',
+      registrationDate: new Date().toISOString()
+    };
+
+    try {
+      // Check for duplicate email
+      if (tutors.some(tutor => tutor.email === tutorData.email)) {
+        throw new Error('A tutor with this email already exists');
+      }
+
+      tutors.push(tutorData);
+      localStorage.setItem('tutors', JSON.stringify(tutors));
+      
+      showNotification('Tutor added successfully!', 'success');
+      document.getElementById('add-tutor-form').reset();
+      bootstrap.Modal.getInstance(document.getElementById('addTutorModal')).hide();
+      loadTutors();
+    } catch (error) {
+      showNotification(error.message, 'error');
+    }
+  }
+
+  function editTutor(index) {
+    const tutor = tutors[index];
+    if (!tutor) return;
+
+    // Store tutor data for editing
+    localStorage.setItem('editTutor', JSON.stringify(tutor));
+    window.location.href = 'tutorregister.html?edit=true';
+  }
+
+  function deleteTutor(index) {
+    if (confirm('Are you sure you want to delete this tutor?')) {
+      tutors.splice(index, 1);
+      localStorage.setItem('tutors', JSON.stringify(tutors));
+      showNotification('Tutor deleted successfully', 'success');
+      loadTutors();
+    }
+  }
+
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '1050';
+    notification.innerHTML = `
+      <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} me-2"></i>
+      ${message}
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  }
+
+  // Event Listeners
+  document.getElementById('subject-filter').addEventListener('change', filterTutors);
+  document.getElementById('status-filter').addEventListener('change', filterTutors);
+
+  // Initialize
+  loadTutors();
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TuitionConnect - Submit a Tutor Review</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #fce4ec);
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.3s ease;
+    }
+    body.dark-mode {
+      background: linear-gradient(to right, #1a1a1a, #2d1b21);
+    }
+    .dark-mode .card {
+      background-color: #2d2d2d;
+      color: #e9ecef;
+    }
+    .rating {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .rating .star {
+      color: #ccc;
+    }
+    .rating .star.active {
+      color: #ffd700;
+    }
+    footer {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: 60px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">TuitionConnect</a>
+    <div class="d-flex">
+      <button class="btn btn-outline-secondary me-2 dark-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+      <a href="Login.html" class="btn btn-outline-primary me-2">Login</a>
+      <a href="studentregister.html" class="btn btn-primary">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4"><i class="fas fa-star me-2"></i>Submit a Tutor Review</h2>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow p-4">
+        <form id="review-form">
+          <div class="mb-3">
+            <label for="tutor-select" class="form-label">Select Tutor:</label>
+            <select class="form-select" id="tutor-select" required>
+              <option value="">-- Choose a Tutor --</option>
+              <option value="Mr. Pubudu Senanayake">Mr. Pubudu Senanayake</option>
+              <option value="Ms. Amal Silva">Ms. Amal Silva</option>
+              <option value="Dr. Nimal Perera">Dr. Nimal Perera</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="review-text" class="form-label">Your Review:</label>
+            <textarea class="form-control" id="review-text" rows="4" placeholder="Write your review here..." required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Rating:</label>
+            <div class="rating" id="rating-stars">
+              <span class="star" data-value="1">★</span>
+              <span class="star" data-value="2">★</span>
+              <span class="star" data-value="3">★</span>
+              <span class="star" data-value="4">★</span>
+              <span class="star" data-value="5">★</span>
+            </div>
+            <input type="hidden" id="rating-value" name="rating" value="0" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 TuitionConnect. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const navbar = document.querySelector('.navbar');
+    if (document.body.classList.contains('dark-mode')) {
+      document.body.style.background = 'linear-gradient(to right, #1a1a1a, #2d1b21)';
+      navbar.classList.remove('navbar-light', 'bg-light');
+      navbar.classList.add('navbar-dark', 'bg-dark');
+      document.querySelector('.dark-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+      document.body.style.background = 'linear-gradient(to right, #e3f2fd, #fce4ec)';
+      navbar.classList.remove('navbar-dark', 'bg-dark');
+      navbar.classList.add('navbar-light', 'bg-light');
+      document.querySelector('.dark-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+    }
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
+
+  if (localStorage.getItem('darkMode') === 'true') {
+    toggleDarkMode();
+  }
+
+  // Rating Selection
+  const stars = document.querySelectorAll('.star');
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const value = star.getAttribute('data-value');
+      document.getElementById('rating-value').value = value;
+      stars.forEach(s => s.classList.remove('active'));
+      for (let i = 0; i < value; i++) {
+        stars[i].classList.add('active');
+      }
+    });
+  });
+
+  // Form Submission
+  document.getElementById('review-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const tutor = document.getElementById('tutor-select').value;
+    const reviewText = document.getElementById('review-text').value;
+    const rating = document.getElementById('rating-value').value;
+
+    if (!tutor || !reviewText || rating === '0') {
+      alert('Please select a tutor, write a review, and provide a rating.');
+      return;
+    }
+
+    const reviewData = {
+      tutorName: tutor,
+      reviewText: reviewText,
+      rating: parseInt(rating),
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    fetch('/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reviewData)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Review submitted successfully!');
+        document.getElementById('review-form').reset();
+        document.getElementById('rating-value').value = '0';
+        stars.forEach(s => s.classList.remove('active'));
+      } else {
+        alert('Failed to submit review. Please try again.');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
+</script>
+</body>
+</html>
